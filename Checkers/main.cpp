@@ -69,13 +69,13 @@ void move(int x0, int y0, int x1, int y1){//verificia si el movimiento que se qu
 	(player == 1) ? num = -1 : num = 1;
 	int i = y0/80, j = x0/80, p = x1/80, q = y1/80;
 	if (d[i][j] == player) {
-		//cout<<"Turno: Jugador "<<player<<endl;
+		cout<<"Entra "<<player<<endl;
 		if ((d[i + num][j-1] == 0 && (i + num)== q && (j - 1)==p )||(d[i + num][j+1] == 0 && 
 			(i + num)== q && (j + 1)==p)){//diagonal negra o blanca
 			int c = d[i][j] ;
 			d[i][j] = 0;
 			d[q][p] = c;
-			(player == 1) ? player = 2 : player = 1;
+			
 			valida = 1;
 		}
 		else if ( j + 2 < 8 && d[i + num][j + 1] != player && d[i + num][j + 1] != 0 && 
@@ -84,17 +84,17 @@ void move(int x0, int y0, int x1, int y1){//verificia si el movimiento que se qu
 			d[i][j] = 0;
 			d[q][p] = c;
 			d[i + num][j + 1] = 0;
-			(player == 1) ? player = 2 : player = 1;
+			
 			valida = 1;
 			
 		}
-		else if(j - 2 > 0 && d[i + num][j - 1] != player && d[i + num][j - 1] != 0 && 
+		else if(j - 2 >= 0 && d[i + num][j - 1] != player && d[i + num][j - 1] != 0 && 
 			d[i + 2*num][j - 2] == 0 && (i + 2*num) == q && (j-2) == p){//comer blanca
 				int c = d[i][j] ;
 				d[i][j] = 0;
 				d[q][p] = c;
 				d[i + num][j -1] = 0;
-				(player == 1) ? player = 2 : player = 1;
+				
 				valida = 1;
 			}
 			
@@ -106,7 +106,7 @@ void move(int x0, int y0, int x1, int y1){//verificia si el movimiento que se qu
 	}
 	
 	else cout<<"No puede mover esta ficha no es su turno"<<endl;
-	
+	cout<<"Juega"<<endl;
 }
 
 void displayCircle(){
@@ -143,6 +143,12 @@ void myDisplay(){
 int count = 0;
 int x0,y0;
 int jugador = 1;
+
+vector < vector<short> > actualizar(vector < vector<short> > g){
+	d = g;
+	return d;
+}
+
 void OnMouseClick(int button, int state, int x, int y){
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN){
 		count++;
@@ -151,23 +157,29 @@ void OnMouseClick(int button, int state, int x, int y){
 			
 			move(x0,y0,x,y);
 			count =0;
-			//cout<<"Moviendo "<<endl;
-			//cout<<x<<"  "<<y<<endl;
 			if(valida){
-			d = game1->play(d);
-			(jugador == 1) ? jugador = 2 : jugador = 1;
-			cout<<"Turno del jugador :"<<jugador<<endl;
+				actualizar(game1->play(d));
+				(jugador == 1) ? jugador = 2 : jugador = 1;
+				cout<<"Turno del jugador :"<<jugador<<endl;
 			}
 			
 		}
+
 		if(count == 1){
 			x0 = x;
 			y0 = y;
-			//cout<<x<<"  "<<y<<endl;
+			
 		}
 		
 	}
+	if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN){
+		actualizar(game1->play(d));
+		(jugador == 1) ? jugador = 2 : jugador = 1;
+		cout<<"Turno del jugador :"<<jugador<<endl;
+	}
+	
 }
+
 
 void myInit(){
 	cout<<"Turno del jugador :"<<player<<endl;
@@ -186,7 +198,6 @@ int main(int argc, char** argv){
 	glutInitWindowSize(640, 640);
 	glutInitWindowPosition(20, 20);
 	glutCreateWindow("Checkers");
-	
 	glutMouseFunc(&OnMouseClick);
 	glutDisplayFunc(myDisplay);
 	
