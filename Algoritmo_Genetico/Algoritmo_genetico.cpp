@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <algorithm> 
 
 #define max_weight 10
 using namespace std;
@@ -55,7 +56,18 @@ public:
 	
 };
 
+bool comparacion( Individuo* ind1, Individuo* ind2 ){
+	return ( ind1->aptitud > ind2->aptitud );
+}
+
 class Algoritmo_genetico{
+private:
+	void print_poblacion(){
+		for(int i = 0 ; i < poblacion.size() ; ++i){
+			poblacion[i]->print();
+		}
+	}
+	
 public:
 	vector<Individuo*> poblacion;
 	int tam_poblacion;
@@ -65,7 +77,7 @@ public:
 	int num_ciudades;
 	
 	Algoritmo_genetico( int tam_poblacion_, int num_generaciones_, int num_elite_, int num_ciudades_): tam_poblacion(tam_poblacion_), 
-		num_generaciones(num_generaciones_), poblacion(tam_poblacion), num_elite(num_elite_), num_ciudades(num_ciudades_){
+		num_generaciones(num_generaciones_), num_elite(num_elite_), num_ciudades(num_ciudades_){
 		
 		vector<short> ciudades_plantilla(num_ciudades);
 		for(int i = 0; i < num_ciudades; ++i){
@@ -85,19 +97,26 @@ public:
 				ciudades.erase(ciudades.begin() + pos, ciudades.begin() + pos+1);
 			}
 			
-			poblacion[i] = new Individuo(individuo);
+			poblacion.push_back(new Individuo(individuo));
 			//poblacion[i]->print();
 		}
 		
 	}
 	
-	void seleccion(){
-		
-	}
-
 	void mutacion(){
 		
 	}
+	
+	void seleccion(){
+		sort(poblacion.begin(), poblacion.end(), comparacion); 	//ordeno segun aptitud
+		//print_poblacion();///
+		poblacion.erase(poblacion.begin()+num_elite, poblacion.end());	//escojo a la elite
+		mutacion();
+		//sort(poblacion.begin(), poblacion.end(), comparacion); 	///
+		//print_poblacion();///
+	}
+
+
 };
 
 
@@ -106,11 +125,12 @@ int main(int argc, char *argv[]) {
 	int num_ciudades = 5;
 	int tam_poblacion = num_ciudades*2;
 	int num_generaciones = 5;
-	int num_elite = tam_poblacion/5; //20% de la poblacion
+	int num_elite = tam_poblacion/5; //20% de la poblacion sera elite
 	
 	grafo = new Grafo(num_ciudades);
 	//grafo->print();
 	Algoritmo_genetico ag( tam_poblacion , num_generaciones , num_elite , num_ciudades );
+	ag.seleccion();
 	
 	return 0;
 }
