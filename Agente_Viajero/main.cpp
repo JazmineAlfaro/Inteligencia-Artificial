@@ -103,9 +103,9 @@ public:
 	}
 	Graph(int tam){
 		for(int i=1;i<=tam;i++){
-			int a = randNum(-150+tam*5,150-tam*5);
-			int b = randNum(-150+tam*5,150-tam*5);
-			insertNode(i,a-i*15,b+i*10);
+			int a = randNum(-150+tam*2,150-tam*2);
+			int b = randNum(-150+tam*2,150-tam*2);
+			insertNode(i,a-i*8,b+i*4);
 		}
 		int num=0;
 		for(int i=0;i<tam-1;++i){
