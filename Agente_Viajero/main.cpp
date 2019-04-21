@@ -105,7 +105,7 @@ public:
 		for(int i=1;i<=tam;i++){
 			int a = randNum(-150,150);
 			int b = randNum(-150,150);
-			insertNode(i,a,b);
+			insertNode(i,a+i*40,b-i*20);
 		}
 		int num=0;
 		for(int i=0;i<tam-1;++i){
@@ -274,7 +274,7 @@ void init_GL(void) {
 	glLoadIdentity();
 }
 
-//en el caso que la ventana cambie de tamaño
+//en el caso que la ventana cambie de tamaÃ±o
 GLvoid window_redraw(GLsizei width, GLsizei height) {
 	glViewport(0, 0, width, height);
 	glMatrixMode(GL_PROJECTION);
@@ -296,7 +296,7 @@ int main(int argc, char** argv) {
 	//Inicializacion de la GLUT
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-	glutInitWindowSize(600, 600); //tamaño de la ventana
+	glutInitWindowSize(600, 600); //tamaÃ±o de la ventana
 	glutInitWindowPosition(50, 50); //posicion de la ventana
 	glutCreateWindow("Grafo"); //titulo de la ventana
 	
