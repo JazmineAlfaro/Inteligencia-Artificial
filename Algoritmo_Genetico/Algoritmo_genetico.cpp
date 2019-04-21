@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm> 
+#include <time.h>
 
 #define max_weight 10
 using namespace std;
@@ -21,9 +22,8 @@ public:
 		for(int i = 0 ; i<adj.size() ; ++i){
 			for(int j = 0 ; j<adj.size() ; ++j){
 				cout << adj[i][j] << " ";
-			}
-			cout << endl;
-		}
+			}cout << endl;
+		}cout << endl;
 	}
 };
 Grafo* grafo;
@@ -57,15 +57,36 @@ public:
 };
 
 bool comparacion( Individuo* ind1, Individuo* ind2 ){
-	return ( ind1->aptitud > ind2->aptitud );
+	return ( ind1->aptitud < ind2->aptitud );
 }
 
 class Algoritmo_genetico{
 private:
-	void print_poblacion(){
-		for(int i = 0 ; i < poblacion.size() ; ++i){
-			poblacion[i]->print();
+	
+	void swap_rand_values(vector<short>& individuo){
+		int pos_swap1 = rand()%num_ciudades;
+		int pos_swap2 = rand()%num_ciudades;
+		while ( pos_swap2 == pos_swap1 ) 
+			pos_swap2 = rand()%num_ciudades;
+		
+		short aux = individuo[pos_swap1];
+		individuo[pos_swap1] = individuo[pos_swap2];
+		individuo[pos_swap2] = aux;
+	}
+	
+	void mutacion(){
+		int i, j;
+		for( i = poblacion.size(), j=0 ; i < tam_poblacion ; ++i, ++j){
+			if (j >= num_elite) j = 0;//generar nuevos pobladores a parrtir de la elite
+			vector<short> individuo(poblacion[j]->genes.begin(), poblacion[j]->genes.end());
+			swap_rand_values(individuo);
+			poblacion.push_back(new Individuo(individuo));
 		}
+	}
+	
+	void seleccion(){
+		sort(poblacion.begin(), poblacion.end(), comparacion); 	//ordeno segun aptitud
+		poblacion.erase(poblacion.begin()+num_elite, poblacion.end());	//escojo a la elite
 	}
 	
 public:
@@ -73,11 +94,12 @@ public:
 	int tam_poblacion;
 	int num_generaciones;
 	int num_elite; //individuos que permaneces despues de cada seleccion
+	int cur_generacion;
 	
 	int num_ciudades;
 	
 	Algoritmo_genetico( int tam_poblacion_, int num_generaciones_, int num_elite_, int num_ciudades_): tam_poblacion(tam_poblacion_), 
-		num_generaciones(num_generaciones_), num_elite(num_elite_), num_ciudades(num_ciudades_){
+		num_generaciones(num_generaciones_), num_elite(num_elite_), num_ciudades(num_ciudades_), cur_generacion(0){
 		
 		vector<short> ciudades_plantilla(num_ciudades);
 		for(int i = 0; i < num_ciudades; ++i){
@@ -103,34 +125,40 @@ public:
 		
 	}
 	
-	void mutacion(){
-		
-	}
-	
-	void seleccion(){
-		sort(poblacion.begin(), poblacion.end(), comparacion); 	//ordeno segun aptitud
-		//print_poblacion();///
-		poblacion.erase(poblacion.begin()+num_elite, poblacion.end());	//escojo a la elite
+	void generar_poblacion(){
+		cur_generacion += 1;
+		seleccion();
 		mutacion();
-		//sort(poblacion.begin(), poblacion.end(), comparacion); 	///
-		//print_poblacion();///
 	}
 
+	void print_poblacion(){
+		cout << "generacion actual: "  << cur_generacion << endl;
+		for(int i = 0 ; i < poblacion.size() ; ++i){
+			poblacion[i]->print();
+		}cout << endl << endl;
+	}
+	
 
 };
 
 
 
 int main(int argc, char *argv[]) {
-	int num_ciudades = 5;
-	int tam_poblacion = num_ciudades*2;
+	int num_ciudades = 7;
+	int tam_poblacion = 10;
 	int num_generaciones = 5;
-	int num_elite = tam_poblacion/5; //20% de la poblacion sera elite
+	int num_elite = tam_poblacion/2; //20% de la poblacion sera elite
+	
 	
 	grafo = new Grafo(num_ciudades);
-	//grafo->print();
+	grafo->print();
 	Algoritmo_genetico ag( tam_poblacion , num_generaciones , num_elite , num_ciudades );
-	ag.seleccion();
+	
+	
+	for(int i = 0; i<20; ++i){//bucle para las iteraciones de generar poblaicon
+		ag.generar_poblacion();
+	}
+	ag.print_poblacion();
 	
 	return 0;
 }
