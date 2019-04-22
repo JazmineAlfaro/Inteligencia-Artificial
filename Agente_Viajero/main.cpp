@@ -331,16 +331,37 @@ void display()
 	cout<<promedio.size()<<endl;*/
 	for(int i=0;i<mejores.size();++i){
 		glColor3f(1.0f,0.0f,1.0f);
-		glVertex2f(-250+(i+1)*30,-250+mejores[i]*30);
+		glVertex2f(-250+(i+1)*30,-310+mejores[i]*30);
 		
 	}
 	
 	for(int i=0;i<promedio.size();++i){
 		glColor3f(0.0f,0.0f,1.0f);
-		glVertex2f(-250+(i+1)*30,-250+promedio[i]*30);
+		glVertex2f(-250+(i+1)*30,-310+promedio[i]*30);
 	}
 	
 	glEnd();
+	
+	glBegin(GL_LINES);
+	glEnable(GL_LINE_SMOOTH);
+	glColor3f(1.0f, 0.0f, 1.0f);
+	
+	for(int i=0;i<mejores.size()-1;++i){
+		glVertex2i(-250+(i+1)*30,-310+mejores[i]*30);
+		glVertex2i(-250+(i+2)*30,-310+mejores[i+1]*30);
+	}
+	
+	glColor3f(0.0f, 0.0f, 1.0f);
+	
+	for(int i=0;i<promedio.size()-1;++i){
+		glVertex2i(-250+(i+1)*30,-310+promedio[i]*30);
+		glVertex2i(-250+(i+2)*30,-310+promedio[i+1]*30);
+	}
+	
+	
+	glEnd();
+	
+	
 	
 	
 	//puntos();
